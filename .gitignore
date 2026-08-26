@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+env/
+.venv/
+.env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Datasets (We ignore raw generated data so git isn't massive, users can generate it via python script)
+data/raw/*.csv
+data/processed/*.csv
+!data/.gitkeep
+
+# Saved Models (Optional: un-ignore if you want to ship pre-trained models)
+models/*.joblib
+!models/.gitkeep
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Pytest
+.pytest_cache/
