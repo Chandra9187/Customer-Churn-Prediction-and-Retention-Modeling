@@ -1,0 +1,42 @@
+project_name: "Customer Churn Prediction and Retention Modeling"
+
+data:
+  raw_path: "data/raw/bank_churn_100k.csv"
+  processed_path: "data/processed/bank_churn_cleaned.csv"
+  target_col: "exited"
+  test_size: 0.2
+  random_state: 42
+  num_samples: 100000
+
+features:
+  numerical: 
+    - "credit_score"
+    - "age"
+    - "tenure"
+    - "balance"
+    - "num_of_products"
+    - "estimated_salary"
+    - "points_earned"
+    - "satisfaction_score"
+  categorical:
+    - "geography"
+    - "gender"
+    - "card_type"
+  binary:
+    - "has_cr_card"
+    - "is_active_member"
+    - "complain"
+
+modeling:
+  cv_folds: 5
+  xgboost_params:
+    learning_rate: [0.01, 0.1, 0.2]
+    max_depth: [3, 5, 7]
+    n_estimators: [100, 200]
+    subsample: [0.8, 1.0]
+
+paths:
+  preprocessor: "models/preprocessor.joblib"
+  model: "models/xgboost_final.joblib"
+  metrics: "results/metrics.json"
+  figures: "results/figures"
