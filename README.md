@@ -1,4 +1,3 @@
-# Customer-Churn-Prediction-and-Retention-Modeling
 <div align="center">
   <h1>💰 Customer Churn Prediction & Retention Modeling</h1>
   <p>An end-to-end data science portfolio project predicting bank customer churn on 100K+ records, estimating expected financial loss, and prioritizing retention via an ML-powered dashboard.</p>
