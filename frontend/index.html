@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Churn Prediction Dashboard | Retention Modeling</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Abstract Background Elements -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="logo">
+                <span class="gradient-text">ChurnAI</span> // Retention Dashboard
+            </div>
+            <ul class="nav-links">
+                <li><a href="#overview" class="active">Overview</a></li>
+                <li><a href="#predict">Prediction Engine</a></li>
+                <li><a href="#insights">Model Insights</a></li>
+                <li><a href="#loss-analysis">Expected Loss</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section id="overview" class="hero section">
+            <div class="hero-content">
+                <div class="badge">Enterprise ML Pipeline</div>
+                <h1 class="hero-title">Predict <span class="gradient-text">Customer Churn</span> & Prioritize Retention</h1>
+                <p class="hero-subtitle">
+                    Modeled churn probability on 100K+ banking records to estimate expected financial loss 
+                    and guide targeted retention initiatives. Powered by an ensemble XGBoost model.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">100K+</div>
+                        <div class="stat-label">Records Analyzed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="hero-roc-auc">0.97</div>
+                        <div class="stat-label">ROC-AUC Score</div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <div class="stat-value" id="hero-loss-pct">81%</div>
+                        <div class="stat-label">Loss from Top 10%</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prediction Engine Section -->
+        <section id="predict" class="section">
+            <div class="section-header">
+                <h2>Live Prediction Engine</h2>
+                <p>Input customer banking details to instantly calculate their churn risk probability.</p>
+            </div>
+
+            <div class="predict-grid">
+                <!-- Form -->
+                <div class="glass-panel form-panel">
+                    <form id="prediction-form" class="prediction-form">
+                        <h3 class="panel-title">Customer Profile</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="credit_score">Credit Score</label>
+                                <input type="number" id="credit_score" name="credit_score" value="650" min="300" max="850" required>
+                                <span class="help-text">300 - 850</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="geography">Geography</label>
+                                <select id="geography" name="geography" required>
+                                    <option value="France">France</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="Spain">Spain</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" name="gender" required>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" id="age" name="age" value="40" min="18" max="100" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tenure">Tenure (Years)</label>
+                                <input type="number" id="tenure" name="tenure" value="5" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="balance">Account Balance ($)</label>
+                                <input type="number" id="balance" name="balance" value="85000" min="0" step="100" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="num_of_products">Num of Products</label>
+                                <input type="number" id="num_of_products" name="num_of_products" value="2" min="1" max="4" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="estimated_salary">Estimated Salary ($)</label>
+                                <input type="number" id="estimated_salary" name="estimated_salary" value="120000" min="0" step="1000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="card_type">Card Type</label>
+                                <select id="card_type" name="card_type" required>
+                                    <option value="Silver">Silver</option>
+                                    <option value="Gold">Gold</option>
+                                    <option value="Platinum">Platinum</option>
+                                    <option value="Diamond">Diamond</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-checkboxes">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="has_cr_card" name="has_cr_card" checked>
+                                <span class="checkmark"></span>
+                                Has Credit Card
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="is_active_member" name="is_active_member" checked>
+                                <span class="checkmark"></span>
+                                Active Member
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="complain" name="complain">
+                                <span class="checkmark"></span>
+                                Previous Complaint
+                            </label>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="satisfaction_score">Satisfaction Score (1-5)</label>
+                                <input type="range" id="satisfaction_score" name="satisfaction_score" min="1" max="5" value="3" class="slider">
+                                <div class="slider-value" id="satisfaction_val">3</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="points_earned">Points Earned</label>
+                                <input type="number" id="points_earned" name="points_earned" value="500" min="0" max="1000" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="predict-btn">
+                            <span class="btn-text">Run Inference</span>
+                            <div class="loader hidden"></div>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Result Panel -->
+                <div class="glass-panel result-panel">
+                    <h3 class="panel-title">Prediction Result</h3>
+                    <div id="empty-state" class="empty-state">
+                        <div class="pulse-ring"></div>
+                        <p>Awaiting profile data...</p>
+                    </div>
+                    
+                    <div id="result-state" class="result-state hidden">
+                        <div class="gauge-container">
+                            <canvas id="riskGauge"></canvas>
+                            <div class="gauge-value" id="churn-prob-value">72%</div>
+                            <div class="gauge-label">Churn Probability</div>
+                        </div>
+
+                        <div class="result-details">
+                            <div class="detail-row">
+                                <span>Risk Level:</span>
+                                <span class="badge risk-high" id="risk-level-badge">High Risk</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Recommendation:</span>
+                                <span id="recommendation-text" class="text-warning">Immediate Outreach Required</span>
+                            </div>
+                            <div class="expected-loss-box">
+                                <span>Expected Financial Loss:</span>
+                                <div class="loss-amount" id="expected-loss-val">$61,200.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights & Model Evaluation -->
+        <section id="insights" class="section">
+            <div class="section-header">
+                <h2>Model Evaluation & Metrics</h2>
+                <p>Ensemble XGBoost model achieves production-grade predictive performance.</p>
+            </div>
+
+            <div class="metrics-grid" id="metrics-container">
+                <!-- Populated by JS -->
+                <div class="metric-skeleton glass-panel"></div>
+                <div class="metric-skeleton glass-panel"></div>
+                <div class="metric-skeleton glass-panel"></div>
+            </div>
+
+            <div class="feature-importance-panel glass-panel mt-2">
+                <h3 class="panel-title">Data Preprocessing Pipeline</h3>
+                <div class="pipeline-flow">
+                    <div class="pipeline-step">
+                        <div class="step-icon">1</div>
+                        <div class="step-text">
+                            <strong>Missing Value Imputation</strong>
+                            <span>KNN Imputation (k=5) preserves complex relationships in 100K records.</span>
+                        </div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="pipeline-step">
+                        <div class="step-icon">2</div>
+                        <div class="step-text">
+                            <strong>Normalizing Skews</strong>
+                            <span>Yeo-Johnson Transform applied to highly skewed balance & salary distributions.</span>
+                        </div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="pipeline-step">
+                        <div class="step-icon">3</div>
+                        <div class="step-text">
+                            <strong>Scaling</strong>
+                            <span>RobustScaler mitigates outliers, ensuring stable model convergence.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Financial Impact Analysis -->
+        <section id="loss-analysis" class="section">
+            <div class="section-header">
+                <h2>Expected Financial Loss Analysis</h2>
+                <p>Translating churn probabilities into business dollar value to prioritize retention efforts.</p>
+            </div>
+
+            <div class="loss-grid">
+                <div class="loss-chart-container glass-panel">
+                    <h3 class="panel-title">Retention Priority Lorenz Curve</h3>
+                    <p class="chart-desc">The top 10% highest risk customers account for the vast majority of expected financial loss.</p>
+                    <div class="chart-wrapper">
+                        <!-- We will draw a representative Lorenz curve via Chart.js -->
+                        <canvas id="lorenzChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="loss-stats glass-panel">
+                    <h3 class="panel-title">Portfolio Impact</h3>
+                    
+                    <div class="impact-stat-group">
+                        <div class="impact-label">Total Expected Portfolio Loss</div>
+                        <div class="impact-value highlight" id="total-loss-stat">$1.67B</div>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="impact-stat-group mt-2">
+                        <div class="impact-label">Top 10% Risky Cohort Loss</div>
+                        <div class="impact-value" id="top10-loss-stat">$1.36B</div>
+                    </div>
+                    
+                    <div class="progress-container mt-1">
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill gradient-bg" style="width: 81%;" id="top10-pct-bar"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span id="top10-pct-text">81.2%</span> of total expected loss
+                        </div>
+                    </div>
+
+                    <div class="action-box mt-2">
+                        <h4>Strategic Recommendation</h4>
+                        <p>Focus retention budget strictly on the top decile. Treating these accounts saves exponentially more capital than uniform retention strategies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-logo">ChurnAI</div>
+            <div class="footer-text">
+                End-to-End Data Science Portfolio Project <br>
+                <span class="text-sm">Built with FastAPI, XGBoost, and Vanilla JS/CSS</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/charts.js"></script>
+</body>
+</html>
